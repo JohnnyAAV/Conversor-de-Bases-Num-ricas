@@ -1,1 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Súper Conversor de Bases Numéricas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #F5F7FA; /* Light background */
+            --secondary-bg: #FFFFFF; /* Card background */
+            --text-color: #333333; /* Dark text */
+            --accent-color: #007BFF; /* Blue accent */
+            --accent-hover: #0056b3; /* Darker blue for hover */
+            --border-color: #E0E0E0; /* Light border */
+            --shadow-color: rgba(0, 0, 0, 0.08); /* Subtle shadow */
+            --steps-bg: #E8F0FE; /* Light blue for steps background */
+            --remainder-color: #dc3545; /* Red for remainders */
+            --quotient-color: #007bff; /* Blue for quotients */
+            --fractional-integer-color: #6f42c1; /* Purple for fractional integers */
+        }
 
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .calculator {
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 30px;
+            width: 100%;
+            max-width: 550px; /* Slightly wider for better layout */
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            letter-spacing: 0.5px;
+        }
+
+        #conversion-options {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 20px; /* Spacing between radio buttons */
+        }
+
+        #conversion-options label {
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            cursor: pointer;
+            position: relative;
+            padding-left: 25px; /* Space for custom radio button */
+            transition: color 0.2s ease;
+        }
+
+        #conversion-options input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Custom radio button */
+        #conversion-options label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 18px;
+            width: 18px;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            background-color: var(--secondary-bg);
+            transition: all 0.2s ease;
+        }
+
+        #conversion-options input[type="radio"]:checked + label::before {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        #conversion-options input[type="radio"]:checked + label::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            background-color: var(--secondary-bg);
+            opacity: 1;
+            transition: all 0.2s ease;
+        }
+
+        /* Input and Buttons */
+        #decimalNumberInput {
+            width: calc(100% - 150px); /* Adjust width considering button space */
+            padding: 12px 15px;
+            margin-right: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            max-width: 250px; /* Limit input width */
+        }
+
+        #decimalNumberInput:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            outline: none;
+            margin-left: 5px;
+        }
+
+        button:first-of-type { /* Convert button */
+            background-color: var(--accent-color);
+            color: var(--secondary-bg);
+        }
+
+        button:first-of-type:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        button:last-of-type { /* Clear button */
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        button:last-of-type:hover {
+            background-color: #d1d1d1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Steps Container */
+        #steps-container {
+            margin-top: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            background-color: var(--primary-bg);
+            max-height: 400px;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        #steps-container h2 {
+            font-size: 1.3em;
+            color: var(--text-color);
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Custom scrollbar for steps */
+        #steps-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #steps-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #steps-container::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
+        #steps-container::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+
+
+        /* Step Boxes for Integer Part */
+        .step-box {
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-template-rows: auto auto;
+            margin-bottom: 8px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            position: relative;
+            background-color: var(--secondary-bg);
+            overflow: hidden; /* To contain pseudo-elements */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-box::before { /* Horizontal line */
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step-box::after { /* Vertical line */
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 50%;
+            border-left: 2px solid var(--text-color);
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .divisor-line-horizontal-strong { /* Strong horizontal line under divisor */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 25px; /* Extend slightly */
+            border-top: 2px solid var(--text-color);
+            transform: translate(calc(-50% + 12px), -50%);
+            z-index: 2;
+        }
+
+        .dividend-box {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            text-align: right;
+            padding-right: 10px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .divisor-box {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            text-align: left;
+            padding-left: 15px;
+            font-weight: 700;
+            font-size: 1.1em;
+            position: relative;
+        }
+
+        .remainder-box {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            text-align: right;
+            font-weight: 700;
+            color: var(--remainder-color);
+            padding-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .quotient-box {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            text-align: left;
+            color: var(--quotient-color);
+            padding-left: 15px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Styles for Fractional Part Steps */
+        .fractional-steps-title {
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 1.2em;
+            color: var(--accent-color);
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .multiplication-step-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--steps-bg); /* Lighter background for fractional steps */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 1.1em;
+        }
+        .multiplication-step-box .expression {
+            flex-grow: 1;
+            text-align: right;
+            padding-right: 10px;
+            font-weight: 400;
+        }
+        .multiplication-step-box .result-integer {
+            font-weight: 700;
+            color: var(--fractional-integer-color);
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 2px solid var(--border-color);
+        }
+
+        /* Final Result */
+        #result {
+            margin-top: 25px;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--accent-color);
+            background-color: var(--steps-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--accent-color);
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .calculator {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            #conversion-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #decimalNumberInput {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            button {
+                width: calc(50% - 5px); /* Half width for buttons */
+                margin-left: 0;
+                margin-right: 5px; /* Adjust spacing */
+            }
+            button:last-of-type {
+                margin-right: 0;
+            }
+            #steps-container h2, .fractional-steps-title {
+                font-size: 1.1em;
+            }
+            .dividend-box, .divisor-box, .remainder-box, .quotient-box, .multiplication-step-box {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>Súper Conversor de Bases Numéricas</h2>
+        <div id="conversion-options">
+            <input type="radio" id="toBinary" name="conversionType" value="2" checked>
+            <label for="toBinary">Binario</label>
+            <input type="radio" id="toOctal" name="conversionType" value="8">
+            <label for="toOctal">Octal</label>
+            <input type="radio" id="toHexadecimal" name="conversionType" value="16">
+            <label for="toHexadecimal">Hexadecimal</label>
+        </div>
+        <input type="text" id="decimalNumberInput" placeholder="Ej: 5.125 o 2855">
+        <button onclick="convertNumber()">Convertir</button>
+        <button onclick="clearCalculator()">Limpiar</button>
+        <div id="steps-container">
+            <h2>Pasos de la Conversión:</h2>
+            <div id="conversionSteps"></div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function convertNumber() {
+            const decimalNumberStr = document.getElementById("decimalNumberInput").value.trim();
+            const conversionStepsDiv = document.getElementById("conversionSteps");
+            const resultDiv = document.getElementById("result");
+
+            let base;
+            let baseName; // To display in the result label
+            let resultLabel;
+
+            // Determine the selected base
+            const radios = document.getElementsByName('conversionType');
+            for (const radio of radios) {
+                if (radio.checked) {
+                    base = parseInt(radio.value);
+                    baseName = radio.labels[0].textContent;
+                    resultLabel = `Resultado ${baseName} (de abajo hacia arriba para la entera, de arriba hacia abajo para la fraccionaria):`;
+                    break;
+                }
+            }
+
+            // --- Input Validation ---
+            if (decimalNumberStr === "") {
+                alert("Por favor, ingresa un número decimal.");
+                return;
+            }
+
+            const parts = decimalNumberStr.split('.');
+            let integerPart = 0;
+            let fractionalPart = 0;
+
+            if (parts.length > 2) {
+                alert("Formato de número decimal inválido. Solo se permite un punto decimal.");
+                return;
+            }
+
+            if (parts[0] !== "") {
+                integerPart = parseInt(parts[0]);
+                if (isNaN(integerPart) || integerPart < 0) {
+                    alert("La parte entera debe ser un número entero positivo o cero.");
+                    return;
+                }
+            } else {
+                integerPart = 0; // If user inputs ".123", integer part is 0
+            }
+
+
+            if (parts.length === 2 && parts[1] !== "") {
+                const tempFractionalStr = "0." + parts[1];
+                fractionalPart = parseFloat(tempFractionalStr);
+                // Check if the fractional part is valid after conversion.
+                // For example, if user enters "123.abc", parseFloat("0.abc") will be NaN.
+                if (isNaN(fractionalPart) || fractionalPart < 0) {
+                     alert("La parte fraccionaria no es válida. Asegúrate que solo contiene dígitos.");
+                     return;
+                }
+                // Check if the original string representation matches, to catch non-numeric fractional parts
+                // Example: 0.123 vs parseFloat("0.123abc") which might return 0.123
+                if (parts[1] !== "" && isNaN(parseInt(parts[1]))) {
+                    alert("La parte fraccionaria no es válida. Asegúrate que solo contiene dígitos.");
+                    return;
+                }
+
+            } else if (parts.length === 2 && parts[1] === "") {
+                // If user inputs "123." treat as integer with no fractional part
+                fractionalPart = 0;
+            }
+
+            // --- Conversion Logic ---
+            const hexChars = "0123456789ABCDEF"; // Helper for hexadecimal
+            function getDigitChar(digit) {
+                return hexChars[digit];
+            }
+
+            // Helper function to format floats, removing trailing zeros and . if integer
+            function formatFloatForDisplay(num) {
+                let str = num.toString();
+                // Handle potential scientific notation for very small or large numbers if needed, though for this context unlikely.
+                // For example, 1e-7 could be desired.
+                
+                // Keep a reasonable number of decimal places for display consistency
+                // Limiting to 10-12 decimal places to avoid excessive length for non-terminating floats
+                if (str.includes('.') && str.split('.')[1].length > 12) {
+                    str = num.toFixed(12); 
+                }
+
+                // Remove trailing zeros after decimal point
+                str = str.replace(/(\.\d*?[1-9])0+$/, '$1');
+                // Remove decimal point if it's .0 or ends with multiple zeros after the dot
+                str = str.replace(/\.0+$/, ''); 
+                return str;
+            }
+
+
+            // 1. Convert Integer Part
+            const integerStepsHTML = [];
+            const convertedIntegerDigits = [];
+            let currentInteger = integerPart;
+
+            if (currentInteger === 0) {
+                integerStepsHTML.push(`
+                    <div class="step-box">
+                        <div class="dividend-box">0</div>
+                        <div class="divisor-box">${base}</div>
+                        <div class="remainder-box">0</div>
+                        <div class="quotient-box">0</div>
+                        <div class="divisor-line-horizontal-strong"></div>
+                    </div>
+                `);
+                convertedIntegerDigits.push("0");
+            } else {
+                while (currentInteger > 0) {
+                    const remainder = currentInteger % base;
+                    const quotient = Math.floor(currentInteger / base);
+                    const numStr = String(currentInteger);
+                    let displayRemainder = getDigitChar(remainder);
+
+                    integerStepsHTML.push(`
+                        <div class="step-box">
+                            <div class="dividend-box">${numStr}</div>
+                            <div class="divisor-box">${base}</div>
+                            <div class="remainder-box">${displayRemainder}</div>
+                            <div class="quotient-box">${quotient}</div>
+                            <div class="divisor-line-horizontal-strong"></div>
+                        </div>
+                    `);
+                    convertedIntegerDigits.unshift(displayRemainder);
+                    currentInteger = quotient;
+                }
+            }
+
+            let fullConvertedResult = convertedIntegerDigits.join("");
+            let fractionalStepsHTML = [];
+            let convertedFractionalDigits = [];
+
+            // 2. Convert Fractional Part (if exists)
+            if (fractionalPart > 0) {
+                fractionalStepsHTML.push('<div class="fractional-steps-title">Pasos de la Parte Fraccionaria:</div>');
+                let currentFractional = fractionalPart;
+                let iterationCount = 0;
+                // Increased max iterations for better precision in hex/octal for non-terminating
+                const MAX_ITERATIONS = 25; // Limit iterations to avoid infinite loops for non-terminating fractions
+
+                // Use a small epsilon to handle floating point inaccuracies
+                const EPSILON = 1e-9; 
+
+                while (currentFractional > EPSILON && iterationCount < MAX_ITERATIONS) {
+                    const prevFractionalDisplay = formatFloatForDisplay(currentFractional); // Capture before multiplication
+                    currentFractional *= base;
+                    const integerDigit = Math.floor(currentFractional);
+                    const displayDigit = getDigitChar(integerDigit);
+
+                    fractionalStepsHTML.push(`
+                        <div class="multiplication-step-box">
+                            <div class="expression">${prevFractionalDisplay} x ${base} = ${formatFloatForDisplay(currentFractional)}</div>
+                            <div class="result-integer">${displayDigit}</div>
+                        </div>
+                    `);
+
+                    convertedFractionalDigits.push(displayDigit);
+                    currentFractional -= integerDigit; // Keep only the new fractional part
+                    iterationCount++;
+                }
+                // Only add the decimal point if there are fractional digits converted
+                if (convertedFractionalDigits.length > 0) {
+                    fullConvertedResult += "." + convertedFractionalDigits.join("");
+                }
+            } else if (decimalNumberStr.endsWith('.') && parts.length === 2) {
+                 // If input was "123." ensure result is "123." not "123"
+                 fullConvertedResult += ".";
+            }
+
+
+            conversionStepsDiv.innerHTML = integerStepsHTML.join("") + fractionalStepsHTML.join("");
+            resultDiv.textContent = `${resultLabel} ${fullConvertedResult}`;
+        }
+
+        function clearCalculator() {
+            document.getElementById("decimalNumberInput").value = "";
+            document.getElementById("conversionSteps").innerHTML = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("toBinary").checked = true; // Reset to Binary
+        }
+    </script>
+</body>
+</html>
