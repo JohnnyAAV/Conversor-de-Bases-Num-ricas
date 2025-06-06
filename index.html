@@ -1,8 +1,7 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Súper Conversor de Bases Numéricas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"></link>
     <style>
         :root {
             --primary-bg: #F5F7FA; /* Light background */
@@ -156,15 +155,32 @@
             box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
         }
 
-        button:last-of-type { /* Clear button */
+        button:nth-of-type(2) { /* Clear button */
             background-color: var(--border-color);
             color: var(--text-color);
         }
 
-        button:last-of-type:hover {
+        button:nth-of-type(2):hover {
             background-color: #d1d1d1;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #toggleSpeechBtn {
+            background-color: #28a745; /* Green for speech button */
+            color: white;
+            margin-top: 15px;
+            width: calc(100% - 10px); /* Adjust width considering margin */
+        }
+
+        #toggleSpeechBtn.speaking {
+            background-color: #ffc107; /* Yellow when speaking */
+        }
+
+        #toggleSpeechBtn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
         }
 
         /* Steps Container */
@@ -373,6 +389,11 @@
             button:last-of-type {
                 margin-right: 0;
             }
+            #toggleSpeechBtn {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
             #steps-container h2, .fractional-steps-title {
                 font-size: 1.1em;
             }
@@ -386,16 +407,17 @@
     <div class="calculator">
         <h2>Súper Conversor de Bases Numéricas</h2>
         <div id="conversion-options">
-            <input type="radio" id="toBinary" name="conversionType" value="2" checked>
+            <input checked="" id="toBinary" name="conversionType" type="radio" value="2" />
             <label for="toBinary">Binario</label>
-            <input type="radio" id="toOctal" name="conversionType" value="8">
+            <input id="toOctal" name="conversionType" type="radio" value="8" />
             <label for="toOctal">Octal</label>
-            <input type="radio" id="toHexadecimal" name="conversionType" value="16">
+            <input id="toHexadecimal" name="conversionType" type="radio" value="16" />
             <label for="toHexadecimal">Hexadecimal</label>
         </div>
-        <input type="text" id="decimalNumberInput" placeholder="Ej: 5.125 o 2855">
+        <input id="decimalNumberInput" placeholder="Ej: 5.125 o 2855" type="text" />
         <button onclick="convertNumber()">Convertir</button>
         <button onclick="clearCalculator()">Limpiar</button>
+        <button id="toggleSpeechBtn" onclick="toggleSpeech()" class="speaking">Desactivar Narrador</button>
         <div id="steps-container">
             <h2>Pasos de la Conversión:</h2>
             <div id="conversionSteps"></div>
@@ -404,7 +426,43 @@
     </div>
 
     <script>
+        const synth = window.speechSynthesis;
+        let speechEnabled = true; // Narrador activado por defecto
+        let currentUtterance = null; // Para almacenar la locución actual
+
+        // Función para hablar
+        function speak(text) {
+            if (synth.speaking) {
+                synth.cancel(); // Detiene cualquier locución anterior si ya está hablando
+            }
+            if (speechEnabled) {
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = 'es-ES'; // Establece el idioma a español
+                synth.speak(currentUtterance);
+            }
+        }
+
+        // Función para activar/desactivar el narrador
+        function toggleSpeech() {
+            speechEnabled = !speechEnabled;
+            const toggleBtn = document.getElementById('toggleSpeechBtn');
+            if (speechEnabled) {
+                toggleBtn.textContent = 'Desactivar Narrador';
+                toggleBtn.classList.add('speaking');
+                speak("Narrador activado. Ahora leeré los pasos de la conversión.");
+            } else {
+                synth.cancel(); // Detiene la locución inmediatamente al desactivar
+                toggleBtn.textContent = 'Activar Narrador';
+                toggleBtn.classList.remove('speaking');
+                speak("Narrador desactivado.");
+            }
+        }
+
         function convertNumber() {
+            if (synth.speaking) {
+                synth.cancel(); // Detiene la narración si se inicia una nueva conversión
+            }
+
             const decimalNumberStr = document.getElementById("decimalNumberInput").value.trim();
             const conversionStepsDiv = document.getElementById("conversionSteps");
             const resultDiv = document.getElementById("result");
@@ -426,7 +484,9 @@
 
             // --- Input Validation ---
             if (decimalNumberStr === "") {
-                alert("Por favor, ingresa un número decimal.");
+                const message = "Por favor, ingresa un número decimal.";
+                alert(message);
+                speak(message);
                 return;
             }
 
@@ -435,14 +495,18 @@
             let fractionalPart = 0;
 
             if (parts.length > 2) {
-                alert("Formato de número decimal inválido. Solo se permite un punto decimal.");
+                const message = "Formato de número decimal inválido. Solo se permite un punto decimal.";
+                alert(message);
+                speak(message);
                 return;
             }
 
             if (parts[0] !== "") {
                 integerPart = parseInt(parts[0]);
                 if (isNaN(integerPart) || integerPart < 0) {
-                    alert("La parte entera debe ser un número entero positivo o cero.");
+                    const message = "La parte entera debe ser un número entero positivo o cero.";
+                    alert(message);
+                    speak(message);
                     return;
                 }
             } else {
@@ -453,16 +517,16 @@
             if (parts.length === 2 && parts[1] !== "") {
                 const tempFractionalStr = "0." + parts[1];
                 fractionalPart = parseFloat(tempFractionalStr);
-                // Check if the fractional part is valid after conversion.
-                // For example, if user enters "123.abc", parseFloat("0.abc") will be NaN.
                 if (isNaN(fractionalPart) || fractionalPart < 0) {
-                     alert("La parte fraccionaria no es válida. Asegúrate que solo contiene dígitos.");
-                     return;
+                    const message = "La parte fraccionaria no es válida. Asegúrate que solo contiene dígitos.";
+                    alert(message);
+                    speak(message);
+                    return;
                 }
-                // Check if the original string representation matches, to catch non-numeric fractional parts
-                // Example: 0.123 vs parseFloat("0.123abc") which might return 0.123
                 if (parts[1] !== "" && isNaN(parseInt(parts[1]))) {
-                    alert("La parte fraccionaria no es válida. Asegúrate que solo contiene dígitos.");
+                    const message = "La parte fraccionaria no es válida. Asegúrate que solo contiene dígitos.";
+                    alert(message);
+                    speak(message);
                     return;
                 }
 
@@ -480,27 +544,21 @@
             // Helper function to format floats, removing trailing zeros and . if integer
             function formatFloatForDisplay(num) {
                 let str = num.toString();
-                // Handle potential scientific notation for very small or large numbers if needed, though for this context unlikely.
-                // For example, 1e-7 could be desired.
-                
-                // Keep a reasonable number of decimal places for display consistency
-                // Limiting to 10-12 decimal places to avoid excessive length for non-terminating floats
                 if (str.includes('.') && str.split('.')[1].length > 12) {
-                    str = num.toFixed(12); 
+                    str = num.toFixed(12);
                 }
-
-                // Remove trailing zeros after decimal point
                 str = str.replace(/(\.\d*?[1-9])0+$/, '$1');
-                // Remove decimal point if it's .0 or ends with multiple zeros after the dot
-                str = str.replace(/\.0+$/, ''); 
+                str = str.replace(/\.0+$/, '');
                 return str;
             }
-
 
             // 1. Convert Integer Part
             const integerStepsHTML = [];
             const convertedIntegerDigits = [];
             let currentInteger = integerPart;
+            let speechText = "Iniciando conversión. ";
+
+            speechText += `Parte entera: ${integerPart}. `;
 
             if (currentInteger === 0) {
                 integerStepsHTML.push(`
@@ -513,7 +571,10 @@
                     </div>
                 `);
                 convertedIntegerDigits.push("0");
+                speechText += `El número es cero, la parte entera convertida es cero. `;
             } else {
+                speechText += `Dividiendo la parte entera ${integerPart} entre la base ${base}. `;
+                let stepNumber = 1;
                 while (currentInteger > 0) {
                     const remainder = currentInteger % base;
                     const quotient = Math.floor(currentInteger / base);
@@ -530,8 +591,11 @@
                         </div>
                     `);
                     convertedIntegerDigits.unshift(displayRemainder);
+                    speechText += `Paso ${stepNumber}: ${numStr} dividido por ${base} es ${quotient} con un residuo de ${displayRemainder}. `;
                     currentInteger = quotient;
+                    stepNumber++;
                 }
+                speechText += `La parte entera convertida, leyendo los residuos de abajo hacia arriba, es ${convertedIntegerDigits.join("")}. `;
             }
 
             let fullConvertedResult = convertedIntegerDigits.join("");
@@ -541,16 +605,18 @@
             // 2. Convert Fractional Part (if exists)
             if (fractionalPart > 0) {
                 fractionalStepsHTML.push('<div class="fractional-steps-title">Pasos de la Parte Fraccionaria:</div>');
+                speechText += `Ahora, la parte fraccionaria: ${formatFloatForDisplay(fractionalPart)}. `;
+
                 let currentFractional = fractionalPart;
                 let iterationCount = 0;
-                // Increased max iterations for better precision in hex/octal for non-terminating
                 const MAX_ITERATIONS = 25; // Limit iterations to avoid infinite loops for non-terminating fractions
+                const EPSILON = 1e-9;
 
-                // Use a small epsilon to handle floating point inaccuracies
-                const EPSILON = 1e-9; 
+                speechText += `Multiplicando la parte fraccionaria por la base ${base}. `;
+                let fracStepNumber = 1;
 
                 while (currentFractional > EPSILON && iterationCount < MAX_ITERATIONS) {
-                    const prevFractionalDisplay = formatFloatForDisplay(currentFractional); // Capture before multiplication
+                    const prevFractionalDisplay = formatFloatForDisplay(currentFractional);
                     currentFractional *= base;
                     const integerDigit = Math.floor(currentFractional);
                     const displayDigit = getDigitChar(integerDigit);
@@ -563,28 +629,39 @@
                     `);
 
                     convertedFractionalDigits.push(displayDigit);
-                    currentFractional -= integerDigit; // Keep only the new fractional part
+                    speechText += `Paso ${fracStepNumber}: ${prevFractionalDisplay} multiplicado por ${base} es igual a ${formatFloatForDisplay(currentFractional)}. El dígito entero es ${displayDigit}. `;
+                    currentFractional -= integerDigit;
                     iterationCount++;
+                    fracStepNumber++;
                 }
-                // Only add the decimal point if there are fractional digits converted
                 if (convertedFractionalDigits.length > 0) {
                     fullConvertedResult += "." + convertedFractionalDigits.join("");
+                    speechText += `La parte fraccionaria convertida, leyendo los dígitos de arriba hacia abajo, es punto ${convertedFractionalDigits.join("")}. `;
                 }
             } else if (decimalNumberStr.endsWith('.') && parts.length === 2) {
-                 // If input was "123." ensure result is "123." not "123"
-                 fullConvertedResult += ".";
+                fullConvertedResult += ".";
+                speechText += `La parte fraccionaria es cero. `;
             }
 
 
             conversionStepsDiv.innerHTML = integerStepsHTML.join("") + fractionalStepsHTML.join("");
-            resultDiv.textContent = `${resultLabel} ${fullConvertedResult}`;
+            const finalResultText = `${resultLabel} ${fullConvertedResult}`;
+            resultDiv.textContent = finalResultText;
+            speechText += `El resultado final es ${fullConvertedResult}.`;
+            speak(speechText);
         }
 
         function clearCalculator() {
+            if (synth.speaking) {
+                synth.cancel(); // Detiene la narración al limpiar
+            }
             document.getElementById("decimalNumberInput").value = "";
             document.getElementById("conversionSteps").innerHTML = "";
             document.getElementById("result").textContent = "";
             document.getElementById("toBinary").checked = true; // Reset to Binary
+            if (speechEnabled) {
+                speak("Calculadora limpiada. Por favor, ingresa un nuevo número.");
+            }
         }
     </script>
 </body>
