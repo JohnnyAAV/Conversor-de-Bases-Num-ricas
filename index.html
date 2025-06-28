@@ -1,9 +1,27 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>Súper Conversor de Bases Numéricas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"></link>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Súper Conversor y Nuestros Productos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
     <style>
-        :root {
+        /* Estilos Generales para el body y reseteos */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #F5F7FA; /* Fondo principal para toda la página */
+            color: #333333;
+            display: flex;
+            flex-direction: column; /* Apila los elementos verticalmente */
+            align-items: center; /* Centra los elementos */
+            min-height: 100vh;
+        }
+
+        /* Estilos de la Calculadora - Adaptados para coexistir */
+        .calculator {
             --primary-bg: #F5F7FA; /* Light background */
             --secondary-bg: #FFFFFF; /* Card background */
             --text-color: #333333; /* Dark text */
@@ -15,33 +33,19 @@
             --remainder-color: #dc3545; /* Red for remainders */
             --quotient-color: #007bff; /* Blue for quotients */
             --fractional-integer-color: #6f42c1; /* Purple for fractional integers */
-        }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .calculator {
             background-color: var(--secondary-bg);
             border-radius: 12px;
             box-shadow: 0 10px 30px var(--shadow-color);
             padding: 30px;
             width: 100%;
-            max-width: 550px; /* Slightly wider for better layout */
+            max-width: 550px;
             box-sizing: border-box;
             text-align: center;
+            margin-bottom: 20px; /* Reducido para que el mensaje quede más cerca */
         }
 
-        h2 {
+        .calculator h2 {
             font-family: 'Montserrat', sans-serif;
             color: var(--accent-color);
             font-weight: 700;
@@ -54,8 +58,8 @@
             margin-bottom: 25px;
             display: flex;
             justify-content: center;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-            gap: 20px; /* Spacing between radio buttons */
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            gap: 20px;
         }
 
         #conversion-options label {
@@ -64,7 +68,7 @@
             color: var(--text-color);
             cursor: pointer;
             position: relative;
-            padding-left: 25px; /* Space for custom radio button */
+            padding-left: 25px;
             transition: color 0.2s ease;
         }
 
@@ -76,7 +80,6 @@
             width: 0;
         }
 
-        /* Custom radio button */
         #conversion-options label::before {
             content: '';
             position: absolute;
@@ -110,9 +113,8 @@
             transition: all 0.2s ease;
         }
 
-        /* Input and Buttons */
         #decimalNumberInput {
-            width: calc(100% - 150px); /* Adjust width considering button space */
+            width: calc(100% - 150px); /* Ajuste para escritorio */
             padding: 12px 15px;
             margin-right: 10px;
             border: 1px solid var(--border-color);
@@ -123,7 +125,7 @@
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             box-sizing: border-box;
-            max-width: 250px; /* Limit input width */
+            max-width: 250px; /* Limita el ancho en pantallas grandes */
         }
 
         #decimalNumberInput:focus {
@@ -141,10 +143,10 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             outline: none;
-            margin-left: 5px;
+            margin-left: 5px; /* Espacio entre botones en escritorio */
         }
 
-        button:first-of-type { /* Convert button */
+        button:first-of-type {
             background-color: var(--accent-color);
             color: var(--secondary-bg);
         }
@@ -155,7 +157,7 @@
             box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
         }
 
-        button:nth-of-type(2) { /* Clear button */
+        button:nth-of-type(2) {
             background-color: var(--border-color);
             color: var(--text-color);
         }
@@ -167,14 +169,14 @@
         }
 
         #toggleSpeechBtn {
-            background-color: #28a745; /* Green for speech button */
+            background-color: #28a745;
             color: white;
             margin-top: 15px;
-            width: calc(100% - 10px); /* Adjust width considering margin */
+            width: calc(100% - 10px); /* Ocupa casi todo el ancho */
         }
 
         #toggleSpeechBtn.speaking {
-            background-color: #ffc107; /* Yellow when speaking */
+            background-color: #ffc107;
         }
 
         #toggleSpeechBtn:hover {
@@ -183,7 +185,6 @@
             box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
         }
 
-        /* Steps Container */
         #steps-container {
             margin-top: 30px;
             border: 1px solid var(--border-color);
@@ -206,7 +207,6 @@
             padding-bottom: 10px;
         }
 
-        /* Custom scrollbar for steps */
         #steps-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -225,8 +225,6 @@
             background: var(--accent-hover);
         }
 
-
-        /* Step Boxes for Integer Part */
         .step-box {
             display: grid;
             grid-template-columns: auto auto;
@@ -237,11 +235,11 @@
             border-radius: 6px;
             position: relative;
             background-color: var(--secondary-bg);
-            overflow: hidden; /* To contain pseudo-elements */
+            overflow: hidden;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        .step-box::before { /* Horizontal line */
+        .step-box::before {
             content: "";
             position: absolute;
             top: 50%;
@@ -252,7 +250,7 @@
             z-index: 1;
         }
 
-        .step-box::after { /* Vertical line */
+        .step-box::after {
             content: "";
             position: absolute;
             top: 0;
@@ -263,11 +261,11 @@
             z-index: 2;
         }
 
-        .divisor-line-horizontal-strong { /* Strong horizontal line under divisor */
+        .divisor-line-horizontal-strong {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 25px; /* Extend slightly */
+            width: 25px;
             border-top: 2px solid var(--text-color);
             transform: translate(calc(-50% + 12px), -50%);
             z-index: 2;
@@ -312,7 +310,6 @@
             font-size: 1.1em;
         }
 
-        /* Styles for Fractional Part Steps */
         .fractional-steps-title {
             margin-top: 25px;
             margin-bottom: 15px;
@@ -332,7 +329,7 @@
             padding: 8px 15px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            background-color: var(--steps-bg); /* Lighter background for fractional steps */
+            background-color: var(--steps-bg);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             font-size: 1.1em;
         }
@@ -350,7 +347,6 @@
             border-left: 2px solid var(--border-color);
         }
 
-        /* Final Result */
         #result {
             margin-top: 25px;
             font-size: 1.4em;
@@ -364,41 +360,240 @@
             letter-spacing: 0.5px;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
+        /* Mensaje de Financiación */
+        .funding-message {
+            background-color: #d4edda; /* Un verde claro para un mensaje positivo */
+            color: #155724; /* Texto verde oscuro */
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 30px auto; /* Centra y da espacio */
+            max-width: 600px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .funding-message strong {
+            color: #0d4a1b; /* Verde más oscuro para resaltar */
+        }
+
+
+        /* Estilos de la Sección de Productos */
+        .productos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Mantener en escritorio */
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto 0 auto;
+            padding: 20px;
+            background-color: #ff8c00; /* Fondo naranja de la sección de productos */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .productos-container h1 { /* Estilo para el título "Nuestros Productos Destacados" */
+            grid-column: 1 / -1; /* Ocupa todas las columnas */
+            text-align: center;
+            color: #fff; /* Blanco para contrastar con el fondo naranja */
+            margin-bottom: 30px;
+            font-size: 2em; /* Tamaño de fuente para escritorio */
+        }
+
+        .producto-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background-color: #fff; /* Fondo blanco de la tarjeta de producto */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .producto-card img {
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            object-fit: contain; /* Asegura que la imagen se contenga dentro del espacio */
+        }
+        .producto-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #555;
+            flex-grow: 1; /* Permite que el título ocupe el espacio disponible */
+        }
+        .producto-card .precio {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff; /* Color azul para todos los precios */
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .enlace-temu {
+            display: inline-block;
+            background-color: #ff8c00; /* Fondo naranja del botón */
+            color: #007bff; /* Color azul para el texto del botón */
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: auto; /* Empuja el botón hacia abajo si el contenido del card varía */
+        }
+        .enlace-temu:hover {
+            background-color: #e67e00; /* Naranja un poco más oscuro al pasar el mouse */
+            text-decoration: none;
+        }
+
+
+        /* Media Queries para responsividad */
+        @media (max-width: 768px) { /* Tabletas y móviles */
+            body {
+                padding: 15px;
+            }
             .calculator {
                 padding: 20px;
             }
-            h2 {
-                font-size: 1.5em;
+            .calculator h2 {
+                font-size: 1.6em;
             }
             #conversion-options {
-                flex-direction: column;
-                gap: 10px;
+                flex-direction: column; /* Apila las opciones de radio */
+                gap: 15px; /* Espacio entre opciones apiladas */
+                align-items: flex-start; /* Alinea las etiquetas a la izquierda */
             }
             #decimalNumberInput {
-                width: 100%;
+                width: 100%; /* Ocupa todo el ancho */
                 margin-right: 0;
-                margin-bottom: 10px;
+                margin-bottom: 15px; /* Espacio antes de los botones */
+                max-width: none; /* Elimina la restricción de ancho máximo */
             }
             button {
-                width: calc(50% - 5px); /* Half width for buttons */
+                width: calc(50% - 7.5px); /* Divide el ancho en 2 botones con espacio */
                 margin-left: 0;
-                margin-right: 5px; /* Adjust spacing */
+                margin-right: 15px; /* Espacio entre los dos primeros botones */
+                margin-bottom: 10px; /* Espacio debajo de los botones */
             }
-            button:last-of-type {
+            button:nth-of-type(2) { /* Ajusta el margen del segundo botón */
                 margin-right: 0;
             }
             #toggleSpeechBtn {
-                width: 100%;
+                width: 100%; /* Ocupa todo el ancho */
                 margin-left: 0;
                 margin-right: 0;
             }
             #steps-container h2, .fractional-steps-title {
-                font-size: 1.1em;
+                font-size: 1.2em;
             }
             .dividend-box, .divisor-box, .remainder-box, .quotient-box, .multiplication-step-box {
                 font-size: 1em;
+            }
+            #result {
+                font-size: 1.2em;
+                padding: 12px;
+            }
+
+            /* Responsive para Productos */
+            .productos-container {
+                padding: 15px;
+                gap: 15px;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Permite 1 o 2 columnas según el ancho */
+            }
+            .productos-container h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .producto-card h3 {
+                font-size: 1.1em;
+            }
+            .producto-card .precio {
+                font-size: 1.3em;
+            }
+            .enlace-temu {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .funding-message {
+                font-size: 1em;
+                padding: 12px 18px;
+                margin: 25px auto;
+            }
+        }
+
+        @media (max-width: 480px) { /* Móviles más pequeños */
+            body {
+                padding: 10px;
+            }
+            .calculator {
+                padding: 15px;
+            }
+            .calculator h2 {
+                font-size: 1.4em;
+                margin-bottom: 20px;
+            }
+            #decimalNumberInput {
+                font-size: 1em;
+                padding: 10px;
+            }
+            button {
+                width: 100%; /* Botones apilados verticalmente */
+                margin-left: 0;
+                margin-right: 0;
+                margin-bottom: 10px; /* Espacio entre botones apilados */
+            }
+            #toggleSpeechBtn {
+                margin-top: 10px;
+                margin-bottom: 0; /* No hay más botones debajo */
+            }
+            #steps-container {
+                margin-top: 20px;
+                padding: 10px;
+            }
+            #steps-container h2, .fractional-steps-title {
+                font-size: 1.05em;
+            }
+            .dividend-box, .divisor-box, .remainder-box, .quotient-box, .multiplication-step-box {
+                font-size: 0.95em;
+                padding: 6px;
+            }
+            .multiplication-step-box .expression, .multiplication-step-box .result-integer {
+                font-size: 0.9em;
+            }
+            #result {
+                font-size: 1.1em;
+                padding: 10px;
+            }
+
+            /* Responsive para Productos - Móviles muy pequeños */
+            .productos-container {
+                padding: 10px;
+                gap: 10px;
+                grid-template-columns: 1fr; /* Una sola columna en pantallas muy pequeñas */
+            }
+            .productos-container h1 {
+                font-size: 1.6em;
+                margin-bottom: 15px;
+            }
+            .producto-card {
+                padding: 10px;
+            }
+            .producto-card h3 {
+                font-size: 1em;
+            }
+            .producto-card .precio {
+                font-size: 1.2em;
+            }
+            .enlace-temu {
+                padding: 7px 12px;
+                font-size: 0.85em;
+            }
+            .funding-message {
+                font-size: 0.9em;
+                padding: 10px 15px;
+                margin: 20px auto;
             }
         }
     </style>
@@ -417,7 +612,7 @@
         <input id="decimalNumberInput" placeholder="Ej: 5.125 o 2855" type="text" />
         <button onclick="convertNumber()">Convertir</button>
         <button onclick="clearCalculator()">Limpiar</button>
-        <button id="toggleSpeechBtn" onclick="toggleSpeech()" class="speaking">Desactivar Narrador</button>
+        <button id="toggleSpeechBtn" onclick="toggleSpeech()">Activar Narrador</button>
         <div id="steps-container">
             <h2>Pasos de la Conversión:</h2>
             <div id="conversionSteps"></div>
@@ -425,24 +620,87 @@
         </div>
     </div>
 
+    <div class="funding-message">
+        ¡Tu apoyo es fundamental! El desarrollo y mantenimiento de esta calculadora se financia a través de las compras que realizas en Temu utilizando los enlaces que encontrarás justo debajo. <strong>Cada compra nos ayuda a seguir mejorando y añadiendo nuevas funciones. ¡Gracias!</strong>
+    </div>
+
+    <div class="productos-container">
+        <h1>Nuestros Productos Destacados</h1>
+
+        <div class="producto-card">
+            <h3>8 Piezas de Hélices Plegables E88</h3>
+            <img src="https://img.kwcdn.com/product/open/2b296eb346384e5b92cab5529e006196-goods.jpeg?imageView2/2/w/800/q/70/format/webp" alt="Hélices Plegables E88">
+            <p class="precio">$2,82</p>
+            <a href="https://app.temu.com/m/fokazru6rv6" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Drone Inteligente E88 PRO</h3>
+            <img src="https://img.kwcdn.com/product/fancy/64a879aa-9c3b-4927-bba8-9f012667632a.jpg?imageView2/2/w/1300/q/90/format/webp" alt="Drone Inteligente E88 PRO">
+            <p class="precio">$17,99</p>
+            <a href="https://app.temu.com/m/f0r4zwp6n0u" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Teclado y mouse inalámbricos</h3>
+            <img src="https://img.kwcdn.com/product/1f79705598/ec7590d1-5055-4042-9466-05081589db02_1000x1000.jpeg?imageView2/2/w/1300/q/90/format/webp" alt="Teclado y mouse inalámbricos">
+            <p class="precio">$20,00</p>
+            <a href="https://app.temu.com/m/f00ajhh91tc" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Reloj inteligente, pantalla táctil completa.</h3>
+            <img src="https://img.kwcdn.com/product/fancy/86cd58a0-6254-4fc5-8e8c-177d68db4bca.jpg?imageView2/2/w/1300/q/90/format/webp" alt="Reloj inteligente">
+            <p class="precio">$11,99</p>
+            <a href="https://app.temu.com/m/fdg4wgkd4ug" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Kit de inicio para principiantes Arduino</h3>
+            <img src="https://img.kwcdn.com/product/fancy/d97b513c-a155-4a1e-8652-01ad24553795.jpg?imageView2/2/w/1300/q/90/format/webp" alt="Kit de inicio Arduino">
+            <p class="precio">$19,58</p>
+            <a href="https://app.temu.com/m/fzt53gf8doi" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Modulo de Controlador de Motor Servo PWM de 16 Canales.</h3>
+            <img src="https://img.kwcdn.com/product/fancy/1ca406d9-4733-4414-8cad-ddccc46c7029.jpg?imageView2/2/w/1300/q/90/format/webp" alt="Modulo de Controlador de Motor Servo PWM">
+            <p class="precio">$4,42</p>
+            <a href="https://app.temu.com/m/ftj2ebtk1mj" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Disco Duro Externo Portátil USB 3.0 de 160GB/250GB/320GB/500GB</h3>
+            <img src="https://img.kwcdn.com/product/fancy/ae485586-e433-46c4-9fc4-3e45cbe41809.jpg?imageView2/2/w/1300/q/90/format/webp" alt="Disco Duro Externo Portátil">
+            <p class="precio">$12,64</p>
+            <a href="https://app.temu.com/m/f6ntryyhc0j" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+        <div class="producto-card">
+            <h3>Trípode De Seguimiento Facial Automático, Sin Necesidad De Aplicación.</h3>
+            <img src="https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/3e687d509a18d9904abd66d9c2eb988a.jpg?imageView2/2/w/1300/q/90/format/webp" alt="Trípode De Seguimiento Facial Automático">
+            <p class="precio">$16,14</p>
+            <a href="https://app.temu.com/m/fkqfvumn618" target="_blank" class="enlace-temu">Ver en Temu</a>
+        </div>
+
+    </div>
+
     <script>
         const synth = window.speechSynthesis;
-        let speechEnabled = true; // Narrador activado por defecto
-        let currentUtterance = null; // Para almacenar la locución actual
+        let speechEnabled = false;
+        let currentUtterance = null;
 
-        // Función para hablar
         function speak(text) {
             if (synth.speaking) {
-                synth.cancel(); // Detiene cualquier locución anterior si ya está hablando
+                synth.cancel();
             }
             if (speechEnabled) {
                 currentUtterance = new SpeechSynthesisUtterance(text);
-                currentUtterance.lang = 'es-ES'; // Establece el idioma a español
+                currentUtterance.lang = 'es-ES';
                 synth.speak(currentUtterance);
             }
         }
 
-        // Función para activar/desactivar el narrador
         function toggleSpeech() {
             speechEnabled = !speechEnabled;
             const toggleBtn = document.getElementById('toggleSpeechBtn');
@@ -451,7 +709,7 @@
                 toggleBtn.classList.add('speaking');
                 speak("Narrador activado. Ahora leeré los pasos de la conversión.");
             } else {
-                synth.cancel(); // Detiene la locución inmediatamente al desactivar
+                synth.cancel();
                 toggleBtn.textContent = 'Activar Narrador';
                 toggleBtn.classList.remove('speaking');
                 speak("Narrador desactivado.");
@@ -460,7 +718,7 @@
 
         function convertNumber() {
             if (synth.speaking) {
-                synth.cancel(); // Detiene la narración si se inicia una nueva conversión
+                synth.cancel();
             }
 
             const decimalNumberStr = document.getElementById("decimalNumberInput").value.trim();
@@ -468,10 +726,9 @@
             const resultDiv = document.getElementById("result");
 
             let base;
-            let baseName; // To display in the result label
+            let baseName;
             let resultLabel;
 
-            // Determine the selected base
             const radios = document.getElementsByName('conversionType');
             for (const radio of radios) {
                 if (radio.checked) {
@@ -482,7 +739,6 @@
                 }
             }
 
-            // --- Input Validation ---
             if (decimalNumberStr === "") {
                 const message = "Por favor, ingresa un número decimal.";
                 alert(message);
@@ -510,9 +766,8 @@
                     return;
                 }
             } else {
-                integerPart = 0; // If user inputs ".123", integer part is 0
+                integerPart = 0;
             }
-
 
             if (parts.length === 2 && parts[1] !== "") {
                 const tempFractionalStr = "0." + parts[1];
@@ -531,17 +786,14 @@
                 }
 
             } else if (parts.length === 2 && parts[1] === "") {
-                // If user inputs "123." treat as integer with no fractional part
                 fractionalPart = 0;
             }
 
-            // --- Conversion Logic ---
-            const hexChars = "0123456789ABCDEF"; // Helper for hexadecimal
+            const hexChars = "0123456789ABCDEF";
             function getDigitChar(digit) {
                 return hexChars[digit];
             }
 
-            // Helper function to format floats, removing trailing zeros and . if integer
             function formatFloatForDisplay(num) {
                 let str = num.toString();
                 if (str.includes('.') && str.split('.')[1].length > 12) {
@@ -552,7 +804,6 @@
                 return str;
             }
 
-            // 1. Convert Integer Part
             const integerStepsHTML = [];
             const convertedIntegerDigits = [];
             let currentInteger = integerPart;
@@ -602,14 +853,13 @@
             let fractionalStepsHTML = [];
             let convertedFractionalDigits = [];
 
-            // 2. Convert Fractional Part (if exists)
             if (fractionalPart > 0) {
                 fractionalStepsHTML.push('<div class="fractional-steps-title">Pasos de la Parte Fraccionaria:</div>');
                 speechText += `Ahora, la parte fraccionaria: ${formatFloatForDisplay(fractionalPart)}. `;
 
                 let currentFractional = fractionalPart;
                 let iterationCount = 0;
-                const MAX_ITERATIONS = 25; // Limit iterations to avoid infinite loops for non-terminating fractions
+                const MAX_ITERATIONS = 25;
                 const EPSILON = 1e-9;
 
                 speechText += `Multiplicando la parte fraccionaria por la base ${base}. `;
@@ -643,7 +893,6 @@
                 speechText += `La parte fraccionaria es cero. `;
             }
 
-
             conversionStepsDiv.innerHTML = integerStepsHTML.join("") + fractionalStepsHTML.join("");
             const finalResultText = `${resultLabel} ${fullConvertedResult}`;
             resultDiv.textContent = finalResultText;
@@ -653,12 +902,12 @@
 
         function clearCalculator() {
             if (synth.speaking) {
-                synth.cancel(); // Detiene la narración al limpiar
+                synth.cancel();
             }
             document.getElementById("decimalNumberInput").value = "";
             document.getElementById("conversionSteps").innerHTML = "";
             document.getElementById("result").textContent = "";
-            document.getElementById("toBinary").checked = true; // Reset to Binary
+            document.getElementById("toBinary").checked = true;
             if (speechEnabled) {
                 speak("Calculadora limpiada. Por favor, ingresa un nuevo número.");
             }
